@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 
-import willfarmer_hw5
+import politicalboundaries
 import pytest
 import numpy as np
 
@@ -8,21 +8,21 @@ import numpy as np
 class TestEndToEnd(object):
     @pytest.fixture
     def system(self):
-        return willfarmer_hw5.System('./hw5/smallState.txt')
+        return politicalboundaries.System('./smallState.txt')
 
     def test_simulated_annealing(self, system):
-        willfarmer_hw5.simulated_annealing(system, 8, 10, False, False)
-        willfarmer_hw5.simulated_annealing(system, 4, 10, False, False)
+        politicalboundaries.simulated_annealing(system, 8, 10, False, False)
+        politicalboundaries.simulated_annealing(system, 4, 10, False, False)
 
     def test_genetic(self, system):
-        willfarmer_hw5.genetic_algorithm(system, 8, 10, False, False)
-        willfarmer_hw5.genetic_algorithm(system, 4, 10, False, False)
+        politicalboundaries.genetic_algorithm(system, 8, 10, False, False)
+        politicalboundaries.genetic_algorithm(system, 4, 10, False, False)
 
 
 class TestSystem(object):
     @pytest.fixture
     def system(self):
-        return willfarmer_hw5.System('./hw5/smallState.txt')
+        return politicalboundaries.System('./smallState.txt')
 
     def test_file_parser(self, system):
         filesystem = np.array([
@@ -52,7 +52,7 @@ class TestSystem(object):
 class TestMask(object):
     @pytest.fixture
     def mask(self):
-        return willfarmer_hw5.Mask()
+        return politicalboundaries.Mask()
 
     def test_parse(self, mask):
         mask.parse_list([[1, 0, 0],
@@ -89,7 +89,7 @@ class TestMask(object):
         mask.parse_list([[1, 0, 0],
                          [1, 1, 1],
                          [0, 0, 1]])
-        mask0 = willfarmer_hw5.Mask()
+        mask0 = politicalboundaries.Mask()
         mask0.parse_list([[0, 0, 0],
                           [0, 1, 1],
                           [0, 0, 0]])
@@ -101,7 +101,7 @@ class TestMask(object):
 
     def test_parse_locations(self, mask):
         mask.parse_locations(3, 3, [[0, 0], [1, 1], [1, 0]])
-        mask0 = willfarmer_hw5.Mask()
+        mask0 = politicalboundaries.Mask()
         mask0.parse_list([[1, 0, 0],
                           [1, 1, 0],
                           [0, 0, 0]])
@@ -112,11 +112,11 @@ class TestMask(object):
                          [1, 0, 1],
                          [1, 0, 1]])
         mask.make_valid()
-        mask0 = willfarmer_hw5.Mask()
+        mask0 = politicalboundaries.Mask()
         mask0.parse_list([[0, 0, 0],
                           [0, 0, 1],
                           [0, 0, 1]])
-        mask1 = willfarmer_hw5.Mask()
+        mask1 = politicalboundaries.Mask()
         mask1.parse_list([[1, 0, 0],
                           [1, 0, 0],
                           [1, 0, 0]])
@@ -126,19 +126,19 @@ class TestMask(object):
                          [0, 0, 0],
                          [1, 0, 1]])
         mask.make_valid()
-        mask0 = willfarmer_hw5.Mask()
+        mask0 = politicalboundaries.Mask()
         mask0.parse_list([[0, 0, 0],
                           [0, 0, 0],
                           [0, 0, 1]])
-        mask1 = willfarmer_hw5.Mask()
+        mask1 = politicalboundaries.Mask()
         mask1.parse_list([[1, 0, 0],
                           [0, 0, 0],
                           [0, 0, 0]])
-        mask2 = willfarmer_hw5.Mask()
+        mask2 = politicalboundaries.Mask()
         mask2.parse_list([[0, 0, 0],
                           [0, 0, 0],
                           [1, 0, 0]])
-        mask3 = willfarmer_hw5.Mask()
+        mask3 = politicalboundaries.Mask()
         mask3.parse_list([[0, 0, 0],
                           [0, 0, 0],
                           [0, 0, 1]])
@@ -149,7 +149,7 @@ class TestMask(object):
 class TestSolution(object):
     @pytest.fixture
     def solution(self):
-        return willfarmer_hw5.Solution(PseudoSystem(), numdistricts=8)
+        return politicalboundaries.Solution(PseudoSystem(), numdistricts=8)
 
     def test_random(self, solution):
         solution.generate_random_solution()
@@ -192,37 +192,37 @@ class TestSolution(object):
 
     def test_combine(self, solution):
         solution.generate_random_solution()
-        osol = willfarmer_hw5.Solution(PseudoSystem(), numdistricts=8)
+        osol = politicalboundaries.Solution(PseudoSystem(), numdistricts=8)
         osol.generate_random_solution()
         new_sol = solution.combine(osol)
 
     def test_district_neighbors(self):
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[1, 0, 0], [0, 0, 0], [0, 0, 0]])
         assert len(solution.get_district_neighbors(1)) == 3
 
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[1, 1, 0], [0, 0, 0], [0, 0, 0]])
         assert len(solution.get_district_neighbors(1)) == 4
 
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])
         assert len(solution.get_district_neighbors(1)) == 4
 
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 0]])
         assert len(solution.get_district_neighbors(1)) == 1
 
     def test_get_filtered_neighbors(self):
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 0]])
         assert len(solution.get_filtered_district_neighbors(1, [0])) == 1
 
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[1, 1, 1], [1, 1, 1], [2, 1, 0]])
         assert len(solution.get_filtered_district_neighbors(1, [0])) == 1
 
-        solution = willfarmer_hw5.Solution(PseudoSystem(width=3, height=3), 2)
+        solution = politicalboundaries.Solution(PseudoSystem(width=3, height=3), 2)
         solution.full_mask = np.array([[2, 2, 2], [2, 1, 1], [1, 1, 0]])
         assert len(solution.get_filtered_district_neighbors(1, [0])) == 1
 

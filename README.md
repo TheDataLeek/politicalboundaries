@@ -2,22 +2,17 @@ Title: Solving Political Boundaries Through Simulation
 Date: 2016-10-14
 Category: Homework
 tags: homework, ai, python, numerics
-Author: Will Farmer
+Author: Zoë Farmer
 Summary: How to generate solutions of hard problems with simulations.
 
-In this writeup we'll discuss two algorithms, simulated annealing and genetic
-algorithms, and show how they can be applied to the problem of drawing political
-boundaries while avoiding gerrymandering.
+In this writeup we'll discuss two algorithms, simulated annealing and genetic algorithms, and show how they can be applied to the problem of drawing political boundaries while avoiding gerrymandering.
 
-This writeup is [available on
-GitHub](https://github.com/willzfarmer/CSCI3202/tree/master/hw5), or [my
-personal website](http://www.will-farmer.com).
+This writeup is [available on GitHub](https://github.com/thedataleek/CSCI3202/tree/master/hw5), or [my personal website](http://www.dataleek.io).
 
 # Table of Contents
 
 2. [Table of Contents](#table-of-contents)
-3. [An Introduction to Simulated Annealing and Genetic Algorithms](#an-introduction-to-simulated-annealing-and-gene
-tic-algorithms)
+3. [An Introduction to Simulated Annealing and Genetic Algorithms](#an-introduction-to-simulated-annealing-and-gene tic-algorithms)
     4. [What is a Fitness Function?](#what-is-a-fitness-function)
     5. [What is Simulated Annealing?](#what-is-simulated-annealing)
     6. [What are Genetic Algorithms?](#what-are-genetic-algorithms)
@@ -43,29 +38,17 @@ tic-algorithms)
 
 First let's talk about our algorithms.
 
-[Simulated Annealing](https://en.wikipedia.org/wiki/Simulated_annealing) and
-[Genetic Algorithms](https://en.wikipedia.org/wiki/Genetic_algorithm) are both
-methods of finding solutions to problems through simulations. In a nutshell,
-basically testing a large amount of semi-random solutions, looking at random
-combinations of our solutions, and then keeping the best that we encounter.
+[Simulated Annealing](https://en.wikipedia.org/wiki/Simulated_annealing) and [Genetic Algorithms](https://en.wikipedia.org/wiki/Genetic_algorithm) are both methods of finding solutions to problems through simulations. In a nutshell, basically testing a large amount of semi-random solutions, looking at random combinations of our solutions, and then keeping the best that we encounter.
 
-The benefit of these algorithms is that we can relatively quickly approximate a
-good solution without much computation time. Our solution won't be "the best"
-unless we get extraordinarily lucky, however it will be a good approximation.
+The benefit of these algorithms is that we can relatively quickly approximate a good solution without much computation time. Our solution won't be "the best" unless we get extraordinarily lucky, however it will be a good approximation.
 
 ## What is a Fitness Function?
 
-Let's look at what [the wikipedia
-page](https://en.wikipedia.org/wiki/Fitness_function) says on the matter.
+Let's look at what [the wikipedia page](https://en.wikipedia.org/wiki/Fitness_function) says on the matter.
 
-> A fitness function is a particular type of objective function that is used to
-> summarise, as a single figure of merit, how close a given design solution is
-> to achieving the set aims.
+> A fitness function is a particular type of objective function that is used to summarise, as a single figure of merit, how close a given design solution is to achieving the set aims.
 
-In other words, it's a single number that basically tells us how "good" of a
-solution we have. For our genetic algorithm and simulated annealing approach
-we'll want to maximize this number, thereby maximizing how "good" our solutions
-are.
+In other words, it's a single number that basically tells us how "good" of a solution we have. For our genetic algorithm and simulated annealing approach we'll want to maximize this number, thereby maximizing how "good" our solutions are.
 
 ## What is Simulated Annealing?
 
@@ -73,8 +56,7 @@ Simulated annealing can be defined as follows.
 
 1. Generate a random solution
 2. Generate a "neighboring solution" to our generated solution
-3. Keep whichever is better, or (with decaying probability) take the new one
-   regardless
+3. Keep whichever is better, or (with decaying probability) take the new one regardless
 4. Go back to 2
 
 Incomplete python code for this is below.
@@ -116,12 +98,12 @@ Again, incomplete code is below.
 
 ```python
 for i in range(10):
-    print('Starting with {}'.format(str(get_value(solutions))))
+    print(f'Starting with {get_value(solutions)}')
     new_solutions = gen_new(solutions)
-    print('Birthed {}'.format(str(get_value(new_solutions))))
+    print(f'Birthed {get_value(new_solutions)}')
     full_solutions = solutions + new_solutions
     solutions = get_top3(full_solutions)
-    print('Evolved to {}'.format(str(get_value(solutions))))
+    print(f'Evolved to {get_value(solutions)}')
     print('---')
 ```
 
@@ -799,10 +781,10 @@ different seeds each time, and then pick the best out of all runs.
 # Using Provided Code
 
 If you're a TA, this is straightforward! After installed the required libraries
-(again check [the repository](https://github.com/willzfarmer/CSCI3202)) just run
+(again check [the repository](https://github.com/thedataleek/CSCI3202)) just run
 
 ```bash
-python ./willfarmer_hw5.py $FILE_TO_RUN
+python ./politicalboundaries.py $FILE_TO_RUN
 ```
 
 This will work for either python 2 or python 3.
@@ -820,9 +802,9 @@ here's a short list as well.
 * Do all of the above in one go.
 
 ```bash
-┬─[william@fillory:~/Dropbox/classwork/2016b/csci3202/hw5]
-╰─>$ ./willfarmer_hw5.py -h
-usage: willfarmer_hw5.py [-h] [-a] [-g] [-n NUMDISTRICTS] [-z] [-p PRECISION]
+┬─[zoe@fillory:~/Dropbox/classwork/2016b/csci3202/hw5]
+╰─>$ ./politicalboundaries.py -h
+usage: politicalboundaries.py [-h] [-a] [-g] [-n NUMDISTRICTS] [-z] [-p PRECISION]
                          [-r] [-j] [-F]
                          F
 

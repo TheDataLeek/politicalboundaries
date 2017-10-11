@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.6
 
 """
 Simulated Annealing and Genetic Algorithm solutions to districting problem.
@@ -9,7 +9,7 @@ Notes on implementation:
     available in the root of this git repository.
     * If by some strange happenstance you only have this file, go to the
     following url to get the entire repo.
-    https://github.com/willzfarmer/CSCI3202/tree/master/hw5
+    https://gitlab.com/thedataleek/politicalboundaries
     * Test coverage is around 80% which I'm happy with. All the super important
     things are tested.
 
@@ -79,8 +79,7 @@ def simulated_annealing(system, numdistricts, precision, animate, makegif):
     history = [solution]  # Keep track of our history
     k = 0.25  # Larger k => more chance of randomly accepting
     Tvals = np.arange(1, 1e-12, -1.0 / precision)
-    print('Running Simulated Annealing with k={:0.03f}, alpha={:0.05f}'\
-            .format(k, 1.0 / precision))
+    print(f'Running Simulated Annealing with k={k:0.03f}, alpha={1.0 / precision:0.05f}')
     for i, T in tqdm(enumerate(Tvals), total=len(Tvals)):
         new_solution = solution.copy()  # copy our current solution
         new_solution.mutate()  # Mutate the copy
@@ -115,7 +114,7 @@ def get_good_start(system, numdistricts):
         new_solution.generate_random_solution()
         if new_solution.value > solution.value:
             solution = new_solution
-    print('Starting with Solution[{}]'.format(solution.value))
+    print(f'Starting with Solution[{solution.value}]')
     return solution
 
 
@@ -272,14 +271,14 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
                           cmap=plt.get_cmap('gnuplot'),
                           vmin=0,
                           vmax=numdistricts)
-    axarr[1].set_title('value {:0.03f}'.format(history[0].value))
+    axarr[1].set_title(f'value {history[0].value:0.03f}')
     axarr[1].axis('off')
 
     def update_plot(i):
         """Animation loop"""
         sol.set_data(history[i].full_mask)
-        axarr[1].set_title('value {:0.03f}'.format(history[i].value))
-        plt.suptitle('Solution {}'.format(i))
+        axarr[1].set_title(f'value {history[i].value:0.03f}')
+        plt.suptitle(f'Solution {i}')
         return sol,
 
     # Set interval so that things always last 60s or to 100
@@ -290,7 +289,7 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
                                   interval=interval, blit=True)
     if not algo_name:
         algo_name = re.sub(' ', '_', history[-1].algo.lower())
-    filename = '{}_solution_{}'.format(algo_name, filename.split('.')[0])
+    filename = f'{algo_name}_solution_{filename.split(".")[0]}'
     ani.save(os.path.join(OUTDIR, filename + '.mp4'))
 
     if makegif:
@@ -346,14 +345,14 @@ class Solution(object):
         sep = (40 * '-') + '\n'
         summary_string = ''
         summary_string += sep
-        summary_string += 'Score: {}\n'.format(self.value)
+        summary_string += f'Score: {self.value}\n'
         summary_string += sep
         total_size, percents = self.system.stats
-        summary_string += 'Total Population Size: {}\n'.format(total_size)
+        summary_string += f'Total Population Size: {total_size}\n'
         summary_string += sep
         summary_string += 'Party Division in Population\n'
         for k, v in percents.items():
-            summary_string += '{}: {:05f}\n'.format(k, v)
+            summary_string += f'{k}: {v:05f}\n'
         summary_string += sep
 
         majorities = {k:0 for k in self.system.names.keys()}
@@ -363,19 +362,19 @@ class Solution(object):
             locations.append(self[i].location)
         summary_string += 'Number of Districts with Majority by Party\n'
         for k, v in majorities.items():
-            summary_string += '{}: {}\n'.format(k, v)
+            summary_string += f'{k}: {v}\n'
         summary_string += sep
 
         summary_string += 'District Locations (zero-indexed, [y, x])\n'
         for i, loc in enumerate(locations):
             loc_string = ','.join(str(tup) for tup in loc)
-            summary_string += 'District {}:{}\n'.format(i + 1, loc_string)
+            summary_string += f'District {i + 1}:{loc_string}\n'
         summary_string += sep
 
-        summary_string += 'Algorithm: {}\n'.format(self.algo)
+        summary_string += f'Algorithm: {self.algo}\n'
         summary_string += sep
 
-        summary_string += 'Valid Solution States Explored: {}\n'.format(self.count)
+        summary_string += f'Valid Solution States Explored: {self.count}\n'
         summary_string += sep
 
         return summary_string[:-1]
@@ -407,7 +406,7 @@ class Solution(object):
         fig, axarr = plt.subplots(1, 2, figsize=FIGSIZE)
         axarr[0].imshow(self.system.matrix, interpolation='nearest')
         axarr[1].imshow(self.full_mask, interpolation='nearest')
-        axarr[1].set_title('Value: {}'.format(self.value))
+        axarr[1].set_title(f'Value: {self.value}')
         axarr[0].axis('off')
         axarr[1].axis('off')
         if save:
@@ -753,7 +752,7 @@ class System(object):
         our matrix is equal to 'D' or 'R'
         """
         if key not in list(self.names.keys()):
-            raise KeyError('{} does not exist'.format(key))
+            raise KeyError(f'{key} does not exist')
         raw_spots = np.where(self.matrix == self.names[key])
         spots = []
         for i in range(len(raw_spots[0])):
@@ -954,6 +953,8 @@ def get_args():
                         help='Generate everything. Report assets, SA, and GA.')
     args = parser.parse_args()
     args.filename = args.filename[0]  # We only allow 1 file at a time.
+    if args.numdistricts is None:
+        raise AssertionError('Please set the number of districts')
     return args
 
 
