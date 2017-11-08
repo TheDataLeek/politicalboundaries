@@ -15,8 +15,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <!-- General and theme style sheets -->
-<link rel="stylesheet" href="/presentations/reveal.js-3.5.0/css/reveal.css">
-<link rel="stylesheet" href="/presentations/reveal.js-3.5.0/css/theme/simple.css" id="theme">
+<link rel="stylesheet" href="./reveal.js-3.5.0/css/reveal.css">
+<link rel="stylesheet" href="./reveal.js-3.5.0/css/theme/simple.css" id="theme">
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
@@ -24,14 +24,14 @@ if( window.location.search.match( /print-pdf/gi ) ) {
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = '/presentations/reveal.js-3.5.0/css/print/pdf.css';
+        link.href = './reveal.js-3.5.0/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
 }
 
 </script>
 
 <!--[if lt IE 9]>
-<script src="/presentations/reveal.js-3.5.0/lib/js/html5shiv.js"></script>
+<script src="./reveal.js-3.5.0/lib/js/html5shiv.js"></script>
 <![endif]-->
 
 <!-- Loading the mathjax macro -->
@@ -11933,8 +11933,8 @@ a.anchor-link {
 <li>I'm a big fan of open source software</li>
 <li>I'm looking for work (pls hire me)</li>
 <li><a href="http://www.dataleek.io">http://www.dataleek.io</a></li>
-<li><a href="http://www.twitter.com/thedataleek">http://www.twitter.com/thedataleek</a></li>
-<li><a href="http://github.com/thedataleek">git[hub|lab].com/thedataleek</a></li>
+<li><a href="http://www.twitter.com/thedataleek">@thedataleek</a></li>
+<li><a href="http://github.com/thedataleek">git(hub|lab).com/thedataleek</a></li>
 </ul>
 
 </div>
@@ -11944,7 +11944,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Our-Algorithms">Our Algorithms<a class="anchor-link" href="#Our-Algorithms">&#182;</a></h1><ul>
+<h2 id="Our-Algorithms">Our Algorithms<a class="anchor-link" href="#Our-Algorithms">&#182;</a></h2><ul>
 <li><a href="https://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a><ul>
 <li>Minor permutations in a given solution until we find a solution that's slightly better, and repeat.</li>
 </ul>
@@ -11971,38 +11971,7 @@ a.anchor-link {
 
 </div>
 </div>
-</div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulated_annealing</span><span class="p">(</span><span class="n">system</span><span class="p">):</span>
-    <span class="n">solution</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">generate_solution</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>  <span class="c1"># Initial solution</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">Tmin</span> <span class="o">=</span> <span class="mf">1e-9</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.99</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># larger k =&gt; higher probability of randomly accepting a solution</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">T</span> <span class="o">&gt;</span> <span class="n">Tmin</span><span class="p">:</span>
-        <span class="n">solution_2</span><span class="p">,</span> <span class="n">value_2</span> <span class="o">=</span> <span class="n">generate_solution_neighbor</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="n">value_delta</span> <span class="o">=</span> <span class="n">value_2</span> <span class="o">-</span> <span class="n">value</span>
-        <span class="k">if</span> <span class="n">value_delta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">solution</span> <span class="o">=</span> <span class="n">solution_2</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">value_2</span>
-        <span class="k">elif</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">value_delta</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">T</span><span class="p">)):</span>
-            <span class="n">solution</span> <span class="o">=</span> <span class="n">solution_2</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">value_2</span>
-        <span class="n">T</span> <span class="o">*=</span> <span class="n">alpha</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12017,30 +11986,7 @@ these children should inherit properties from their parents)</li>
 
 </div>
 </div>
-</div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">genetic_algorithm</span><span class="p">(</span><span class="n">system</span><span class="p">):</span>
-    <span class="n">solutions</span> <span class="o">=</span> <span class="n">generate_3_solutions</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">precision</span><span class="p">):</span>
-        <span class="n">new_solutions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># Create 10 children per frame (arbitrary)</span>
-            <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">solutions</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Randomly combine two parents</span>
-            <span class="n">new_solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">s2</span><span class="p">))</span>
-        <span class="n">full_solutions</span> <span class="o">=</span> <span class="n">new_solutions</span> <span class="o">+</span> <span class="n">solutions</span>
-        <span class="c1"># Keep the top 3 for next generation</span>
-        <span class="n">solutions</span> <span class="o">=</span> <span class="n">get_top_3</span><span class="p">(</span><span class="n">full_solutions</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">solutions</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12070,7 +12016,7 @@ D D D D D D R D</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which can be plotted for readability.</p>
-<p><img src="./img/smallState_initial.png" alt="png"></p>
+<p><img src="./img/smallState_initial.png" style="width: 50%"></p>
 
 </div>
 </div>
@@ -12100,27 +12046,7 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">point_neighbors</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">x0</span><span class="p">):</span>
-    <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[(</span><span class="n">y0</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
-                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                 <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                 <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span> <span class="ow">and</span>
-                 <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="ow">and</span>
-                 <span class="ow">not</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">neighbors</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12130,56 +12056,9 @@ D D D D D D R D</code></pre>
 <li>Think of these as <a href="https://en.wikipedia.org/wiki/Connected_component_(graph_theory">single connected components</a>)</li>
 <li>We can use <a href="https://en.wikipedia.org/wiki/Connected-component_labeling">connected component labelling</a>. (from wikipedia)</li>
 </ul>
-<blockquote><ol>
-<li>Start from the first pixel in the image. Set "curlab" (short for "current label") to 1. Go to (2).</li>
-<li>If this pixel is a foreground pixel and it is not already labelled, then give it the label "curlab" and add it as the first element in a queue, then go to (3). If it is a background pixel or it was already labelled, then repeat (2) for the next pixel in the image.</li>
-<li>Pop out an element from the queue, and look at its neighbours (based on any type of connectivity). If a neighbour is a foreground pixel and is not already labelled, give it the "curlab" label and add it to the queue. Repeat (3) until there are no more elements in the queue.</li>
-<li>Go to (2) for the next pixel in the image and increment "curlab" by 1.</li>
-</ol>
-</blockquote>
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Mask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="k">def</span> <span class="nf">get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">curlab</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="k">def</span> <span class="nf">unlabelled</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">unlabelled</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-                    <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">curlab</span>
-                    <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-                    <span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
-                        <span class="n">y0</span><span class="p">,</span> <span class="n">x0</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-                        <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[(</span><span class="n">y0</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
-                                     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                                     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-                                     <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span> <span class="ow">and</span>
-                                     <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span> <span class="ow">and</span>
-                                     <span class="ow">not</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)]</span>
-                        <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">unlabelled</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">):</span>
-                                <span class="n">labels</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">curlab</span>
-                                <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">))</span>
-                    <span class="n">curlab</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">curlab</span><span class="p">,</span> <span class="n">labels</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -12201,38 +12080,6 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="k">def</span> <span class="nf">get_district_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_random_openspot</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">labels</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
-            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">yi</span><span class="p">,</span> <span class="n">xi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">))</span>
-                        <span class="n">labels</span><span class="p">[</span><span class="n">yi</span><span class="p">,</span> <span class="n">xi</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">edges</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -12281,51 +12128,6 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>  <span class="c1"># if we don&#39;t have a valid solution, return 0</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="c1"># num districts tries to match population distribution within 10%</span>
-        <span class="n">size</span><span class="p">,</span> <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">stats</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">majorities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">)</span> <span class="o">-</span> <span class="n">stats</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">0</span>
-        <span class="n">district_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">)</span>
-        <span class="c1"># Sum up values of each district</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># District value is simply abs(num_red - num_blue)</span>
-                <span class="n">subvalue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">values</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span>
-                                  <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">values</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]))</span>
-                <span class="n">size_bonus</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="n">district_size</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">subvalue</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                    <span class="c1"># For any non-uniform values, add 10% their value to account</span>
-                    <span class="c1"># for independent voter turnout</span>
-                    <span class="n">subvalue</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="n">subvalue</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
-                <span class="n">value</span> <span class="o">+=</span> <span class="n">subvalue</span>
-                <span class="n">value</span> <span class="o">-=</span> <span class="n">size_bonus</span>
-                <span class="c1"># Minimize neighbors (same as minimizing edge length)</span>
-                <span class="n">value</span> <span class="o">+=</span> <span class="o">-</span><span class="mf">0.1</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_district_neighbors</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">value</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -12349,36 +12151,11 @@ D D D D D D R D</code></pre>
 </div>
 </div>
 </div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="k">def</span> <span class="nf">generate_random_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">solution_history</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_random_openspot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-            <span class="k">if</span> <span class="n">history</span><span class="p">:</span>
-                <span class="n">solution_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="n">solution_history</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">keep_history</span><span class="o">=</span><span class="n">history</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">history</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">solution_history</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="./img/generate_random_solution_smallState.gif" alt="gif"></p>
+<p><img src="./img/generate_random_solution_smallState.gif" style="width: 50%;"></p>
 
 </div>
 </div>
@@ -12397,36 +12174,12 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulated_annealing</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
-    <span class="n">solution</span> <span class="o">=</span> <span class="n">get_good_start</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">)</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="mf">0.25</span>  <span class="c1"># Larger k =&gt; more chance of randomly accepting</span>
-    <span class="n">Tvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">precision</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Running Simulated Annealing with k=</span><span class="si">{k:0.03f}</span><span class="s1">, alpha={1.0 / precision:0.05f}&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">Tvals</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">Tvals</span><span class="p">)):</span>
-        <span class="n">new_solution</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># copy our current solution</span>
-        <span class="n">new_solution</span><span class="o">.</span><span class="n">mutate</span><span class="p">()</span>  <span class="c1"># Mutate the copy</span>
-        <span class="n">dv</span> <span class="o">=</span> <span class="n">new_solution</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">solution</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># Look at delta of values</span>
-        <span class="c1"># If it&#39;s better, or random chance, we accept it</span>
-        <span class="k">if</span> <span class="n">dv</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dv</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">T</span><span class="p">)):</span>
-            <span class="n">solution</span> <span class="o">=</span> <span class="n">new_solution</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></div></section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-much-does-choice-of-k-impact-solution-selection?">How much does choice of <code>k</code> impact solution selection?<a class="anchor-link" href="#How-much-does-choice-of-k-impact-solution-selection?">&#182;</a></h2><p><img src="./img/kvals.png" alt="png"></p>
+<h2 id="How-much-does-choice-of-k-impact-solution-selection?">How much does choice of <code>k</code> impact solution selection?<a class="anchor-link" href="#How-much-does-choice-of-k-impact-solution-selection?">&#182;</a></h2><p><img src="./img/kvals.png" style="width: 50%;"></p>
 
 </div>
 </div>
@@ -12436,7 +12189,7 @@ D D D D D D R D</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The entire process looks like this:</p>
-<p><img src="./img/simulated_annealing_solution_smallState.gif" alt="gif"></p>
+<p><img src="./img/simulated_annealing_solution_smallState.gif" style="width: 50%"></p>
 
 </div>
 </div>
@@ -12446,7 +12199,7 @@ D D D D D D R D</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which has the following final solution.</p>
-<p><img src="./img/simulated_annealing_solution_smallState.png" alt="png"></p>
+<p><img src="./img/simulated_annealing_solution_smallState.png" style="width: 50%"></p>
 
 </div>
 </div>
@@ -12466,50 +12219,12 @@ D D D D D D R D</code></pre>
 </div>
 </div>
 </div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">)</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_random_openspot</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">traversed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
-            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">traversed</span><span class="p">:</span>
-                <span class="n">traversed</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-
-                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">i</span> <span class="ow">and</span>
-                        <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>  <span class="c1"># make sure new mutation is valid</span>
-                        <span class="c1"># If not, reset and start over</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_value</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">break</span>
-
-                <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-                    <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">))</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which can be visualized as follows.</p>
-<p><img src="./img/mutation.png" alt="png"></p>
+<p><img src="./img/mutation.png" style="width: 50%"></p>
 
 </div>
 </div>
@@ -12538,57 +12253,12 @@ other connected components.</p>
 </div>
 </div>
 </div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="c1"># ...</span>
-    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_solution</span><span class="p">):</span>
-        <span class="n">new_solution</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">)</span>
-        <span class="c1"># Randomly order parents to choose from</span>
-        <span class="n">pick_order</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_solution</span><span class="p">]</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pick_order</span><span class="p">)</span>
-        <span class="c1"># Randomly order districts to choose from</span>
-        <span class="n">districts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">districts</span><span class="p">)</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># alternates between parents</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">districts</span><span class="p">:</span>
-            <span class="n">parent_locations</span> <span class="o">=</span> <span class="n">pick_order</span><span class="p">[</span><span class="n">cursor</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">location</span>
-            <span class="n">open_locations</span> <span class="o">=</span> <span class="n">new_solution</span><span class="o">.</span><span class="n">get_full_openspots</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">district</span> <span class="o">=</span> <span class="n">Mask</span><span class="p">()</span>
-            <span class="c1"># We make every child valid</span>
-            <span class="n">district</span><span class="o">.</span><span class="n">parse_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
-                                     <span class="p">[(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parent_locations</span>
-                                      <span class="k">if</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="ow">in</span> <span class="n">open_locations</span><span class="p">])</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">district</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
-                <span class="n">district</span><span class="o">.</span><span class="n">make_valid</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">district</span><span class="o">.</span><span class="n">location</span><span class="p">:</span>
-                <span class="n">new_solution</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-            <span class="n">cursor</span> <span class="o">^=</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numdistricts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">new_solution</span><span class="o">.</span><span class="n">get_random_openspot</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">new_solution</span><span class="o">.</span><span class="n">get_random_openspot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">new_solution</span><span class="o">.</span><span class="n">full_mask</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
-            <span class="n">new_solution</span><span class="o">.</span><span class="n">mutate</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">new_solution</span>
-    <span class="c1"># ...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which can be visualized as follows.</p>
-<p><img src="./img/combine.png" alt="png"></p>
+<p><img src="./img/combine.png" style="width: 50%"></p>
 
 </div>
 </div>
@@ -12663,8 +12333,8 @@ require(
       waitSeconds: 15
     },
     [
-      "/presentations/reveal.js-3.5.0/lib/js/head.min.js",
-      "/presentations/reveal.js-3.5.0/js/reveal.js"
+      "./reveal.js-3.5.0/lib/js/head.min.js",
+      "./reveal.js-3.5.0/js/reveal.js"
     ],
 
     function(head, Reveal){
@@ -12679,9 +12349,9 @@ require(
 
             // Optional libraries used to extend on reveal.js
             dependencies: [
-                { src: "/presentations/reveal.js-3.5.0/lib/js/classList.js",
+                { src: "./reveal.js-3.5.0/lib/js/classList.js",
                   condition: function() { return !document.body.classList; } },
-                { src: "/presentations/reveal.js-3.5.0/plugin/notes/notes.js",
+                { src: "./reveal.js-3.5.0/plugin/notes/notes.js",
                   async: true,
                   condition: function() { return !!document.body.classList; } }
             ]
