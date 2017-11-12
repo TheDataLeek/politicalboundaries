@@ -32,6 +32,9 @@ import itertools
 import queue
 import time
 
+# typing
+from typing import Union
+
 # pypi imports
 import numpy as np                       # heavy lifting
 import matplotlib.pyplot as plt          # visualization
@@ -43,11 +46,15 @@ from tqdm import tqdm                    # Progress bars are nice
 
 FIGSIZE = (4, 4)  # For asset exporting
 OUTDIR = './img'
+INITIAL_COLORMAP = plt.get_cmap('seismic')
+DISTRICT_COLORMAP = plt.get_cmap('nipy_spectral')
 
 
 def main():
     args = get_args()
     system = System(args.filename)
+    if args.numdistricts is None:
+        args.numdistricts = len(system.matrix[0])
     if args.full:
         generate_report_assets(system, args.numdistricts, 1000, True)
         simulated_annealing(system, args.numdistricts, 1000, True, True)
@@ -168,7 +175,7 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     # First just plot initial map
     plt.figure(figsize=FIGSIZE)
     plt.imshow(system.matrix, interpolation='nearest',
-               cmap=plt.get_cmap('cool'))
+               cmap=INITIAL_COLORMAP)
     plt.axis('off')
     plt.title(system.filename)
     plt.savefig(os.path.join(OUTDIR, system.filename.split('.')[0] + '_initial.png'))
@@ -184,17 +191,17 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     backup = solution.copy()
     fig, axarr = plt.subplots(1, 3, figsize=FIGSIZE)
     axarr[0].imshow(solution.full_mask, interpolation='nearest',
-                    cmap=plt.get_cmap('gnuplot'))
+                    cmap=DISTRICT_COLORMAP)
     axarr[0].axis('off')
     axarr[0].set_title('Initial')
     solution.mutate()
     axarr[1].imshow(solution.full_mask, interpolation='nearest',
-                    cmap=plt.get_cmap('gnuplot'))
+                    cmap=DISTRICT_COLORMAP)
     axarr[1].axis('off')
     axarr[1].set_title('Mutant')
     axarr[2].imshow(np.abs(backup.full_mask - solution.full_mask),
                     interpolation='nearest',
-                    cmap=plt.get_cmap('gnuplot'))
+                    cmap=DISTRICT_COLORMAP)
     axarr[2].axis('off')
     axarr[2].set_title('Difference')
     plt.savefig(os.path.join(OUTDIR, 'mutation.png'))
@@ -204,13 +211,13 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     solution.generate_random_solution()
     fig, axarr = plt.subplots(2, 2, figsize=FIGSIZE)
     axarr[0, 0].imshow(backup.full_mask, interpolation='nearest',
-                       cmap=plt.get_cmap('gnuplot'),
+                       cmap=DISTRICT_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[0, 0].axis('off')
     axarr[0, 0].set_title('Parent 1')
     axarr[0, 1].imshow(solution.full_mask, interpolation='nearest',
-                       cmap=plt.get_cmap('gnuplot'),
+                       cmap=DISTRICT_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[0, 1].axis('off')
@@ -218,14 +225,14 @@ def generate_report_assets(system, numdistricts, precision, makegif):
 
     child, history = backup.combine(solution, keep_history=True)
     axarr[1, 1].imshow(child.full_mask, interpolation='nearest',
-                       cmap=plt.get_cmap('gnuplot'),
+                       cmap=DISTRICT_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[1, 1].axis('off')
     axarr[1, 1].set_title('Child')
 
     sol = axarr[1, 0].imshow(history[0].full_mask, interpolation='nearest',
-                             cmap=plt.get_cmap('gnuplot'),
+                             cmap=DISTRICT_COLORMAP,
                              vmin=0,
                              vmax=child.numdistricts)
     axarr[1, 0].axis('off')
@@ -264,11 +271,11 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
     fig, axarr = plt.subplots(1, 2, figsize=FIGSIZE)
     # Plot our "field"
     systemplot = axarr[0].imshow(systemdata, interpolation='nearest',
-                                 cmap=plt.get_cmap('cool'))
+                                 cmap=INITIAL_COLORMAP)
     axarr[0].axis('off')
     # Plot our first solution
     sol = axarr[1].imshow(history[0].full_mask, interpolation='nearest',
-                          cmap=plt.get_cmap('gnuplot'),
+                          cmap=DISTRICT_COLORMAP,
                           vmin=0,
                           vmax=numdistricts)
     axarr[1].set_title(f'value {history[0].value:0.03f}')
@@ -285,6 +292,7 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
     interval = max(int(60000.0 / len(history)), 100)
     if interval == 0:
         interval = 1
+    interval = 0.5
     ani = animation.FuncAnimation(fig, update_plot, len(history),
                                   interval=interval, blit=True)
     if not algo_name:
@@ -300,7 +308,7 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
     if history[-1].algo is not None:
         plt.figure(figsize=FIGSIZE)
         plt.imshow(history[-1].full_mask, interpolation='nearest',
-                   cmap=plt.get_cmap('gnuplot'),
+                   cmap=DISTRICT_COLORMAP,
                    vmin=0,
                    vmax=numdistricts)
         plt.title(history[-1].algo + ' Final Solution')
@@ -704,8 +712,7 @@ class Solution(object):
             district.parse_locations(self.height, self.width,
                                      [(y, x) for y, x in parent_locations
                                       if [y, x] in open_locations])
-            if not district.is_valid:
-                district.make_valid()
+            district.make_valid()
             for y, x in district.location:
                 new_solution.full_mask[y, x] = i
             cursor ^= 1
@@ -840,6 +847,15 @@ class Mask(object):
         """Numpy string version of array"""
         return str(self.mask)
 
+    def __eq__(self, other: Union['Mask', np.ndarray]):
+        """Tells us if two masks are the same. Used in test code"""
+        if isinstance(other, Mask):
+            return np.array_equal(self.mask, other.mask)
+        elif isinstance(other, np.ndarray):
+            return np.array_equal(self.mask, other)
+        else:
+            raise ValueError('Invalid Types Supplied')
+
     @property
     def size(self):
         """Number of elements in mask"""
@@ -856,6 +872,11 @@ class Mask(object):
             self.mask[y, x] = 1
 
     def make_valid(self):
+        """
+        Makes the mask valid, remains the same if already valid
+
+        Keeps a random connected component
+        """
         if not self.is_valid:
             curlab, labels = self.get_labels()
             num_components = labels.max()
@@ -865,7 +886,6 @@ class Mask(object):
                 y, x = spots[0][i], spots[1][i]
                 self.mask[y, x] = 0
             assert self.is_valid  # CAUSE IM SCRED
-            return (self.mask == keep).astype(int)
 
     @property
     def location(self):
@@ -918,13 +938,6 @@ class Mask(object):
         else:
             return True
 
-    def overlap(self, mask):
-        """Tells us if two masks overlap. Used in test code"""
-        if ((self.mask + mask.mask) > 1).any():
-            return True
-        else:
-            return False
-
 
 def get_args():
     """Get our arguments"""
@@ -942,7 +955,7 @@ def get_args():
                               'width of the system'))
     parser.add_argument('-z', '--animate', action='store_true', default=False,
                         help='Animate algorithms?')
-    parser.add_argument('-p', '--precision', type=int, default=1000,
+    parser.add_argument('-p', '--precision', type=int, default=5000,
                         help=('Tweak precision, lower is less. '
                               'In a nutshell, how many loops to run.'))
     parser.add_argument('-r', '--report', action='store_true', default=False,
@@ -953,8 +966,6 @@ def get_args():
                         help='Generate everything. Report assets, SA, and GA.')
     args = parser.parse_args()
     args.filename = args.filename[0]  # We only allow 1 file at a time.
-    if args.numdistricts is None:
-        raise AssertionError('Please set the number of districts')
     return args
 
 

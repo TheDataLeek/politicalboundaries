@@ -15,8 +15,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <!-- General and theme style sheets -->
-<link rel="stylesheet" href="./reveal.js-3.5.0/css/reveal.css">
-<link rel="stylesheet" href="./reveal.js-3.5.0/css/theme/simple.css" id="theme">
+<link rel="stylesheet" href="/presentations/reveal.js-3.5.0/css/reveal.css">
+<link rel="stylesheet" href="/presentations/reveal.js-3.5.0/css/theme/simple.css" id="theme">
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
@@ -24,14 +24,14 @@ if( window.location.search.match( /print-pdf/gi ) ) {
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = './reveal.js-3.5.0/css/print/pdf.css';
+        link.href = '/presentations/reveal.js-3.5.0/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
 }
 
 </script>
 
 <!--[if lt IE 9]>
-<script src="./reveal.js-3.5.0/lib/js/html5shiv.js"></script>
+<script src="/presentations/reveal.js-3.5.0/lib/js/html5shiv.js"></script>
 <![endif]-->
 
 <!-- Loading the mathjax macro -->
@@ -11905,7 +11905,8 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Political-Boundaries-and-Simulations">Political Boundaries and Simulations<a class="anchor-link" href="#Political-Boundaries-and-Simulations">&#182;</a></h1><h2 id="Zo&#235;-Farmer">Zo&#235; Farmer<a class="anchor-link" href="#Zo&#235;-Farmer">&#182;</a></h2>
+<h1 id="Political-Boundaries-and-Simulations">Political Boundaries and Simulations<a class="anchor-link" href="#Political-Boundaries-and-Simulations">&#182;</a></h1><h2 id="Zo&#235;-Farmer">Zo&#235; Farmer<a class="anchor-link" href="#Zo&#235;-Farmer">&#182;</a></h2><p><em>Press the space-bar to proceed to the next slide. <a href="http://lab.hakim.se/reveal-js/">See here for a brief tutorial</a></em></p>
+
 </div>
 </div>
 </div></section><section>
@@ -11914,6 +11915,7 @@ a.anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="What-are-we-talking-about?">What are we talking about?<a class="anchor-link" href="#What-are-we-talking-about?">&#182;</a></h1><p>In this presentation I'll discuss two numerical approaches to solving political boundaries while striving to avoid gerrymandering.</p>
+<p>This is mainly an exploration, and since the final results can be finnicky, this analysis should be taken with a grain of salt...</p>
 <p>Slides, code, and images are available here if you want to follow along.</p>
 <p><a href="http://bit.ly/2xvaHnX">http://bit.ly/2xvaHnX</a></p>
 <p>or</p>
@@ -11933,8 +11935,8 @@ a.anchor-link {
 <li>I'm a big fan of open source software</li>
 <li>I'm looking for work (pls hire me)</li>
 <li><a href="http://www.dataleek.io">http://www.dataleek.io</a></li>
-<li><a href="http://www.twitter.com/thedataleek">@thedataleek</a></li>
-<li><a href="http://github.com/thedataleek">git(hub|lab).com/thedataleek</a></li>
+<li><a href="http://www.twitter.com/thedataleek">@TheDataLeek</a></li>
+<li><a href="http://github.com/thedataleek">git(hub/lab).com/thedataleek</a></li>
 </ul>
 
 </div>
@@ -11944,7 +11946,9 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Our-Algorithms">Our Algorithms<a class="anchor-link" href="#Our-Algorithms">&#182;</a></h2><ul>
+<h1 id="Our-Algorithms">Our Algorithms<a class="anchor-link" href="#Our-Algorithms">&#182;</a></h1><p>We're talking about two different numerical methods that obtain "close-enough" solutions.</p>
+<p>Closed form solutions aren't always possible to obtain, so we can get one that's numerically close to solving our hard problem.</p>
+<ul>
 <li><a href="https://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a><ul>
 <li>Minor permutations in a given solution until we find a solution that's slightly better, and repeat.</li>
 </ul>
@@ -11957,7 +11961,7 @@ a.anchor-link {
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -11966,12 +11970,12 @@ a.anchor-link {
 <li>Generate a random solution</li>
 <li>Generate a "neighboring solution" to our generated solution</li>
 <li>Keep whichever is better, or (with decaying probability) take the new one regardless</li>
-<li>Go back to 2</li>
+<li>Go back to 2 or eventually stop</li>
 </ol>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -11981,8 +11985,48 @@ a.anchor-link {
 <li>Use our solution population to generate some large number of children (note,
 these children should inherit properties from their parents)</li>
 <li>Keep the best of our total population</li>
-<li>Go back to 2</li>
+<li>Go back to 2 or eventually stop</li>
 </ol>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Why-Python?">Why Python?<a class="anchor-link" href="#Why-Python?">&#182;</a></h1><ul>
+<li>Entire codebase is in Python3.6</li>
+<li>Numerical analysis is great in python</li>
+<li>Easy to build up a solution as layers</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Libraries">Libraries<a class="anchor-link" href="#Libraries">&#182;</a></h1>
+<pre><code># stdlib imports
+import sys
+import os
+import argparse
+import math
+import random
+import re
+import itertools
+import queue
+import time
+
+# pypi imports
+import numpy as np                       # heavy lifting
+import matplotlib.pyplot as plt          # visualization
+import matplotlib.animation as animation # animation
+import moviepy                           # export to gif
+from moviepy import editor               # More gif
+from tqdm import tqdm                    # Progress bars are nice</code></pre>
 
 </div>
 </div>
@@ -11997,6 +12041,7 @@ these children should inherit properties from their parents)</li>
 <li>2 parties</li>
 <li>Rectangular areas</li>
 <li>Provided in a specific format</li>
+<li>These examples are in $8\times8$ grid, with 8 districts.</li>
 </ul>
 
 <pre><code>D R D R D R R R
@@ -12028,7 +12073,7 @@ D D D D D D R D</code></pre>
 <h1 id="Related-Problems-to-Solve-First">Related Problems to Solve First<a class="anchor-link" href="#Related-Problems-to-Solve-First">&#182;</a></h1>
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12046,7 +12091,7 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12059,7 +12104,7 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12085,7 +12130,7 @@ D D D D D D R D</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-a-Fitness-Function?">What is a Fitness Function?<a class="anchor-link" href="#What-is-a-Fitness-Function?">&#182;</a></h2><p>For both these algorithms we talk about their "value", which in this case is determined with a fitness function.</p>
+<h2 id="Fitness-Functions">Fitness Functions<a class="anchor-link" href="#Fitness-Functions">&#182;</a></h2><p>For both these algorithms we talk about their "value", which in this case is determined with a fitness function.</p>
 <p>From wikipedia:</p>
 <blockquote><p>A fitness function is a particular type of objective function that is used to summarise, as a single figure of merit, how close a given design solution is to achieving the set aims.</p>
 </blockquote>
@@ -12179,35 +12224,6 @@ D D D D D D R D</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-much-does-choice-of-k-impact-solution-selection?">How much does choice of <code>k</code> impact solution selection?<a class="anchor-link" href="#How-much-does-choice-of-k-impact-solution-selection?">&#182;</a></h2><p><img src="./img/kvals.png" style="width: 50%;"></p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The entire process looks like this:</p>
-<p><img src="./img/simulated_annealing_solution_smallState.gif" style="width: 50%"></p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Which has the following final solution.</p>
-<p><img src="./img/simulated_annealing_solution_smallState.png" style="width: 50%"></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Mutations">Mutations<a class="anchor-link" href="#Mutations">&#182;</a></h2><p>Simulated Annealing relies on "mutating" solutions via the following algorithm.</p>
 <ol>
 <li>Find all district neighbors</li>
@@ -12228,27 +12244,54 @@ D D D D D D R D</code></pre>
 
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The entire process looks like this:</p>
+<p><img src="./img/simulated_annealing_solution_smallState.gif" style="width: 50%"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Which has the following final solution.</p>
+<div style="display: inline-flex;">
+<img src="./img/smallState_initial.png" style="width: 50%">
+<img src="./img/simulated_annealing_solution_smallState.png" style="width: 50%">
+</div>
+</div>
+</div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Genetic-Algorithms">Genetic Algorithms<a class="anchor-link" href="#Genetic-Algorithms">&#182;</a></h1><p>As simulated annealing relies on <code>mutate()</code> to narrow down on a good solution, the genetic algorithm relies on <code>combine()</code> to take two solutions and generate a "child" solution.</p>
+<h1 id="Genetic-Algorithms">Genetic Algorithms<a class="anchor-link" href="#Genetic-Algorithms">&#182;</a></h1><p>Recall:</p>
 <ol>
-<li>Shuffle our two parents in an array.</li>
-<li>Shuffle a list of districts.</li>
-<li>Set a cursor that points to the first parent in the array.</li>
-<li>Iterate through our districts with variable <code>i</code></li>
-<li>For the current district, find all points of the parent that our cursor is pointing to.</li>
-<li>Get all "open" (i.e. set to 0) points for our child solution</li>
-<li>For every point that matches between these two sets, make a new bitmask.</li>
-<li>If this bitmask is valid (i.e. one connected component), set all point in this child solution to our current district</li>
-<li>Otherwise, make the district valid and set the bits in the child solution</li>
-<li>Flip the cursor</li>
+<li>Randomly generate an initial population of solutions</li>
+<li>Use our solution population to generate some large number of children (note,
+these children should inherit properties from their parents)</li>
+<li>Keep the best of our total population</li>
+<li>Go back to 2 or eventually stop</li>
 </ol>
-<p>The algorithm behind making a district valid is easy, if we have more than one
-connected component in a given district, pick one at random and discard the
-other connected components.</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Mutations">Mutations<a class="anchor-link" href="#Mutations">&#182;</a></h1><ol>
+<li>Shuffle the parents</li>
+<li>Shuffle the districts</li>
+<li>Overlay and connect similar districts to create a child</li>
+</ol>
 
 </div>
 </div>
@@ -12258,8 +12301,30 @@ other connected components.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which can be visualized as follows.</p>
-<p><img src="./img/combine.png" style="width: 50%"></p>
+<p><img src="./img/combine.gif" style="width: 50%"></p>
 
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This process looks like this</p>
+<p><img src="./img/genetic_algorithm_solution_smallState.gif" style="width: 50%"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With corresponding final solution</p>
+<div style="display: inline-flex;">
+<img src="./img/smallState_initial.png" style="width: 50%">
+<img src="./img/genetic_algorithm_solution_smallState.png" style="width: 50%">
+</div>
 </div>
 </div>
 </div></section></section><section><section>
@@ -12280,7 +12345,7 @@ other connected components.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Using-the-Code">Using the Code<a class="anchor-link" href="#Using-the-Code">&#182;</a></h1><p>This is straightforward! After installing the required libraries (check <a href="https://gitlab.com/thedataleek/politicalboundaries">the repository</a>) just run</p>
+<h1 id="Using-the-Code-(Live-Demo?)">Using the Code (Live Demo?)<a class="anchor-link" href="#Using-the-Code-(Live-Demo?)">&#182;</a></h1><p>This is straightforward! After installing the required libraries (check <a href="https://gitlab.com/thedataleek/politicalboundaries">the repository</a>) just run</p>
 <div class="highlight"><pre><span></span>$ python3.6 ./politicalboundaries.py <span class="nv">$FILE_TO_RUN</span>
 </pre></div>
 <p>If you want to dig a little deeper, use the <code>-h</code> flag to see what it can do, but
@@ -12306,6 +12371,8 @@ here's a short list as well.</p>
 <h1 id="Next-Steps">Next Steps<a class="anchor-link" href="#Next-Steps">&#182;</a></h1><p>I want to do more for this project but I'm limited in the time I have. I do have
 a couple of ideas for next steps however.</p>
 <ul>
+<li>Generalizing for more than 2 parties</li>
+<li>Testing Robustness against hostile inputs</li>
 <li>Parallelizing - Instead of just running simulations on a single thread, we could theoretically spin up a bunch of different threads and run simulations on them simultaneously, only keeping the best of all trials.</li>
 <li>Real Data - It would be amazing to take the approaches used in this writeup and apply it to real-world political data.</li>
 </ul>
@@ -12317,7 +12384,217 @@ a couple of ideas for next steps however.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Questions?">Questions?<a class="anchor-link" href="#Questions?">&#182;</a></h1>
+<h1 id="Questions?">Questions?<a class="anchor-link" href="#Questions?">&#182;</a></h1><ul>
+<li>Follow me on Twitter <a href="https://twitter.com/thedataleek">@TheDataLeek</a></li>
+<li>Check out slides on my website, <a href="http://dataleek.io">http://dataleek.io</a></li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Appendix">Appendix<a class="anchor-link" href="#Appendix">&#182;</a></h1>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Simulated-Annealing">Simulated Annealing<a class="anchor-link" href="#Simulated-Annealing">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simulated_annealing</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">makegif</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform simulated annealing on our system with a series of progressively</span>
+<span class="sd">    improving solutions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">get_good_start</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">)</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="p">[</span><span class="n">solution</span><span class="p">]</span>  <span class="c1"># Keep track of our history</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mf">0.25</span>  <span class="c1"># Larger k =&gt; more chance of randomly accepting</span>
+    <span class="n">Tvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-12</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">precision</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Running Simulated Annealing with k=</span><span class="si">{k:0.03f}</span><span class="s1">, alpha={1.0 / precision:0.05f}&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">Tvals</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">Tvals</span><span class="p">)):</span>
+        <span class="n">new_solution</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># copy our current solution</span>
+        <span class="n">new_solution</span><span class="o">.</span><span class="n">mutate</span><span class="p">()</span>  <span class="c1"># Mutate the copy</span>
+        <span class="c1"># TODO: Speed this up by keeping current value</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="n">new_solution</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">solution</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># Look at delta of values</span>
+        <span class="c1"># If it&#39;s better, or random chance, we accept it</span>
+        <span class="k">if</span> <span class="n">dv</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dv</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">T</span><span class="p">)):</span>
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">new_solution</span>
+            <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_solution</span><span class="p">)</span>
+
+    <span class="n">solution</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Tvals</span><span class="p">)</span>
+    <span class="n">solution</span><span class="o">.</span><span class="n">algo</span> <span class="o">=</span> <span class="s1">&#39;Simulated Annealing&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">animate</span><span class="p">:</span>
+        <span class="n">animate_history</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">system</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span>
+                        <span class="n">history</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">,</span>
+                        <span class="n">makegif</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Genetic-Algorithm">Genetic Algorithm<a class="anchor-link" href="#Genetic-Algorithm">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">genetic_algorithm</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">makegif</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use a genetic algorithm to find a good solution to our district problem</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Start with random initial solution space (3)</span>
+    <span class="n">solutions</span> <span class="o">=</span> <span class="p">[</span><span class="n">Solution</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">numdistricts</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solutions</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">generate_random_solution</span><span class="p">()</span>  <span class="c1"># Initialize our solutions</span>
+    <span class="n">top_history</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Keep history of our top solution from each &quot;frame&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">precision</span><span class="p">)):</span>
+        <span class="n">new_solutions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># Create 10 children per frame</span>
+            <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">solutions</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># Randomly combine two parents</span>
+            <span class="n">new_solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">s2</span><span class="p">))</span>
+        <span class="c1"># Combine everything, giving 13 total solutions</span>
+        <span class="n">full_solutions</span> <span class="o">=</span> <span class="n">new_solutions</span> <span class="o">+</span> <span class="n">solutions</span>
+        <span class="c1"># Keep the top 3 for next generation</span>
+        <span class="n">solutions</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span>
+                     <span class="nb">sorted</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">full_solutions</span><span class="p">],</span>
+                            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tup</span><span class="p">:</span> <span class="o">-</span><span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="c1"># Only record top from generation, and only if it&#39;s changed</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">top_history</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">top_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">top_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">top_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">solution</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">precision</span>
+    <span class="n">solution</span><span class="o">.</span><span class="n">algo</span> <span class="o">=</span> <span class="s1">&#39;Genetic Algorithm&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">animate</span><span class="p">:</span>
+        <span class="n">animate_history</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">system</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span>
+                        <span class="n">top_history</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">numdistricts</span><span class="p">,</span>
+                        <span class="n">makegif</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="How-much-does-choice-of-k-impact-solution-selection?">How much does choice of <code>k</code> impact solution selection?<a class="anchor-link" href="#How-much-does-choice-of-k-impact-solution-selection?">&#182;</a></h2><p><img src="./img/kvals.png" style="width: 50%;"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Code-Structure">Code Structure<a class="anchor-link" href="#Code-Structure">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>▼ Mask : class
+   +__init__ : function
+   -__str__ : function
+  ▼+get_labels : function
+     +unlabelled : function
+   +is_valid : function
+   +location : function
+   +make_valid : function
+   +overlap : function
+   +parse_list : function
+   +parse_locations : function
+   +size : function
+
+▼ Solution : class
+   -__eq__ : function
+   -__getitem__ : function
+   +__init__ : function
+   -__ne__ : function
+   -__str__ : function
+   +combine : function
+   +copy : function
+   +fill : function
+   +generate_random_solution : function
+   +get_district_neighbors : function
+   +get_filtered_district_neighbors : function
+   +get_full_openspots : function
+   +get_neighbors : function
+   +get_random_openspot : function
+   +get_solution : function
+   +height : function
+   +is_valid : function
+   +majorities : function
+   +majority : function
+   +mutate : function
+   +show : function
+   +summary : function
+   +value : function
+   +width : function
+
+▼ System : class
+   -__getitem__ : function
+   +__init__ : function
+   +_name_arr : function
+   +_read_file : function
+   +empty_state : function
+   +height : function
+   +stats : function
+   +width : function
+
+▼+animate_history : function
+   +update_plot : function
+
+▼+generate_report_assets : function
+   +update : function
+
+ +genetic_algorithm : function
+
+ +get_args : function
+
+ +get_good_start : function
+
+ +main : function
+
+ +simulated_annealing : function
+
+▼ variables
+    FIGSIZE
+    OUTDIR</code></pre>
+
 </div>
 </div>
 </div>
@@ -12333,8 +12610,8 @@ require(
       waitSeconds: 15
     },
     [
-      "./reveal.js-3.5.0/lib/js/head.min.js",
-      "./reveal.js-3.5.0/js/reveal.js"
+      "/presentations/reveal.js-3.5.0/lib/js/head.min.js",
+      "/presentations/reveal.js-3.5.0/js/reveal.js"
     ],
 
     function(head, Reveal){
@@ -12349,9 +12626,9 @@ require(
 
             // Optional libraries used to extend on reveal.js
             dependencies: [
-                { src: "./reveal.js-3.5.0/lib/js/classList.js",
+                { src: "/presentations/reveal.js-3.5.0/lib/js/classList.js",
                   condition: function() { return !document.body.classList; } },
-                { src: "./reveal.js-3.5.0/plugin/notes/notes.js",
+                { src: "/presentations/reveal.js-3.5.0/plugin/notes/notes.js",
                   async: true,
                   condition: function() { return !!document.body.classList; } }
             ]
