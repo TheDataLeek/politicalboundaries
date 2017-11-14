@@ -58,6 +58,16 @@ class TestMask(object):
                          [0, 1, 1]])
         assert mask.is_valid is True
 
+        mask.parse_list([[0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 1],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0]])
+        assert mask.is_valid is False
+
     def test_parse_locations(self, mask):
         mask.parse_locations(3, 3, [[0, 0], [1, 1], [1, 0]])
         assert (
@@ -96,11 +106,11 @@ class TestMask(object):
                               [0, 0, 1]]))
 
     def test_location(self, mask):
-        assert mask.location == [[0, 0],
-                                 [0, 2],
-                                 [1, 0],
-                                 [1, 2],
-                                 [2, 2]]
+        assert mask.location == [(0, 0),
+                                 (0, 2),
+                                 (1, 0),
+                                 (1, 2),
+                                 (2, 2)]
 
     def test_get_labels(self, mask):
         curlab, labels = mask.get_labels()

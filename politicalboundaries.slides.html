@@ -11905,22 +11905,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Political-Boundaries-and-Simulations">Political Boundaries and Simulations<a class="anchor-link" href="#Political-Boundaries-and-Simulations">&#182;</a></h1><h2 id="Zo&#235;-Farmer">Zo&#235; Farmer<a class="anchor-link" href="#Zo&#235;-Farmer">&#182;</a></h2><p><em>Press the space-bar to proceed to the next slide. <a href="http://lab.hakim.se/reveal-js/">See here for a brief tutorial</a></em></p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="What-are-we-talking-about?">What are we talking about?<a class="anchor-link" href="#What-are-we-talking-about?">&#182;</a></h1><p>In this presentation I'll discuss two numerical approaches to solving political boundaries while striving to avoid gerrymandering.</p>
-<p>This is mainly an exploration, and since the final results can be finnicky, this analysis should be taken with a grain of salt...</p>
-<p>Slides, code, and images are available here if you want to follow along.</p>
-<p><a href="http://bit.ly/2xvaHnX">http://bit.ly/2xvaHnX</a></p>
-<p>or</p>
-<p><a href="http://dataleek.io/presentations/politicalboundaries">http://dataleek.io/presentations/politicalboundaries</a></p>
-
+<h1 id="Political-Boundaries-and-Simulations">Political Boundaries and Simulations<a class="anchor-link" href="#Political-Boundaries-and-Simulations">&#182;</a></h1><h2 id="Zo&#235;-Farmer">Zo&#235; Farmer<a class="anchor-link" href="#Zo&#235;-Farmer">&#182;</a></h2>
 </div>
 </div>
 </div></section><section>
@@ -11936,8 +11921,23 @@ a.anchor-link {
 <li>I'm looking for work (pls hire me)</li>
 <li><a href="http://www.dataleek.io">http://www.dataleek.io</a></li>
 <li><a href="http://www.twitter.com/thedataleek">@TheDataLeek</a></li>
-<li><a href="http://github.com/thedataleek">git(hub/lab).com/thedataleek</a></li>
+<li><a href="http://github.com/thedataleek">github.com/thedataleek</a></li>
+<li><a href="http://gitlab.com/thedataleek">gitlab.com/thedataleek</a></li>
 </ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="What-are-we-talking-about?">What are we talking about?<a class="anchor-link" href="#What-are-we-talking-about?">&#182;</a></h1><p>In this presentation I'll discuss two numerical approaches to solving political boundaries while striving to avoid gerrymandering.</p>
+<p>This is mainly an exploration, and since the final results can be finnicky, this analysis should be taken with a grain of salt...</p>
+<p>Slides, code, and images are available here if you want to follow along.</p>
+<p><a href="http://bit.ly/2xvaHnX">http://bit.ly/2xvaHnX</a></p>
+<p>or</p>
+<p><a href="http://dataleek.io/presentations/politicalboundaries">http://dataleek.io/presentations/politicalboundaries</a></p>
 
 </div>
 </div>
@@ -11972,6 +11972,7 @@ a.anchor-link {
 <li>Keep whichever is better, or (with decaying probability) take the new one regardless</li>
 <li>Go back to 2 or eventually stop</li>
 </ol>
+<p><img src="./img/simulatedannealingdiagram.png" style="width: 50%"/></p>
 
 </div>
 </div>
@@ -11983,10 +11984,11 @@ a.anchor-link {
 <h1 id="Genetic-Algorithm">Genetic Algorithm<a class="anchor-link" href="#Genetic-Algorithm">&#182;</a></h1><ol>
 <li>Randomly generate an initial population of solutions</li>
 <li>Use our solution population to generate some large number of children (note,
-these children should inherit properties from their parents)</li>
+these children should inherit properties from their parents). Add mutation to avoid inbreeding.</li>
 <li>Keep the best of our total population</li>
 <li>Go back to 2 or eventually stop</li>
 </ol>
+<p><img src="./img/geneticalgorithmdiagram.png" /></p>
 
 </div>
 </div>
@@ -11996,9 +11998,19 @@ these children should inherit properties from their parents)</li>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Why-Python?">Why Python?<a class="anchor-link" href="#Why-Python?">&#182;</a></h1><ul>
-<li>Entire codebase is in Python3.6</li>
-<li>Numerical analysis is great in python</li>
-<li>Easy to build up a solution as layers</li>
+<li>Entire codebase is in Python3.6<ul>
+<li>f-strings are slick</li>
+<li>Typing is nifty</li>
+<li>Faster</li>
+<li>Backwards compatible with Python3.5, so we can use pypy if we want</li>
+</ul>
+</li>
+<li>Numerical analysis is great in python<ul>
+<li>Bindings to fortran libs =&gt; very fast</li>
+<li>Easy to work with/code in</li>
+<li>Offers many advanced math capabilities (FFT, ODE, etc.)</li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -12010,23 +12022,24 @@ these children should inherit properties from their parents)</li>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Libraries">Libraries<a class="anchor-link" href="#Libraries">&#182;</a></h1>
 <pre><code># stdlib imports
-import sys
-import os
-import argparse
-import math
-import random
-import re
-import itertools
-import queue
-import time
+import sys       # exits and calls
+import os        # path manipulation
+import argparse  # argument handling
+import math      # exponent - faster than numpy for this
+import random    # built-in random func
+import re        # dynamically pull out algo names
+import queue     # used for SCC labelling
 
-# pypi imports
+# typing
+from typing import Union
+
+# third-party imports
 import numpy as np                       # heavy lifting
 import matplotlib.pyplot as plt          # visualization
 import matplotlib.animation as animation # animation
-import moviepy                           # export to gif
 from moviepy import editor               # More gif
-from tqdm import tqdm                    # Progress bars are nice</code></pre>
+from tqdm import tqdm                    # Progress bars are nice
+from halo import Halo                    # Spinner</code></pre>
 
 </div>
 </div>
@@ -12042,8 +12055,7 @@ from tqdm import tqdm                    # Progress bars are nice</code></pre>
 <li>Rectangular areas</li>
 <li>Provided in a specific format</li>
 <li>These examples are in $8\times8$ grid, with 8 districts.</li>
-</ul>
-
+<li>Equal density squares, not population. "Voting Units"
 <pre><code>D R D R D R R R
 D D R D R R R R
 D D D R R R R R
@@ -12052,6 +12064,8 @@ R R D D D R R R
 R D D D D D R R
 R R R D D D D D
 D D D D D D R D</code></pre>
+</li>
+</ul>
 
 </div>
 </div>
@@ -12098,8 +12112,14 @@ D D D D D D R D</code></pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Determining-if-a-District-is-Valid">Determining if a District is Valid<a class="anchor-link" href="#Determining-if-a-District-is-Valid">&#182;</a></h2><p>How do we determine valid solutions?</p>
 <ul>
-<li>Think of these as <a href="https://en.wikipedia.org/wiki/Connected_component_(graph_theory">single connected components</a>)</li>
+<li>Connected squares (diagonals count)</li>
+<li>Think of these as single connected components</li>
 <li>We can use <a href="https://en.wikipedia.org/wiki/Connected-component_labeling">connected component labelling</a>. (from wikipedia)</li>
+</ul>
+<h2 id="Valid-Solutions?">Valid Solutions?<a class="anchor-link" href="#Valid-Solutions?">&#182;</a></h2><ul>
+<li>Made up of valid districts</li>
+<li>No missing (not accounted for) squares</li>
+<li>All districts accounted for.</li>
 </ul>
 
 </div>
@@ -12131,8 +12151,7 @@ D D D D D D R D</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Fitness-Functions">Fitness Functions<a class="anchor-link" href="#Fitness-Functions">&#182;</a></h2><p>For both these algorithms we talk about their "value", which in this case is determined with a fitness function.</p>
-<p>From wikipedia:</p>
-<blockquote><p>A fitness function is a particular type of objective function that is used to summarise, as a single figure of merit, how close a given design solution is to achieving the set aims.</p>
+<blockquote><p>A fitness function is a particular type of objective function that is used to summarise, as a single figure of merit, how close a given design solution is to achieving the set aims. (wikipedia)</p>
 </blockquote>
 <p>TL;DR a single number that basically tells us how "good" of a solution we have.</p>
 
@@ -12145,12 +12164,23 @@ D D D D D D R D</code></pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Taking a step back from the code and considering the real world, let's think about what we'd ideally like to emphasize in a political districting system.</p>
 <ul>
-<li>We'd want districts to be homogeneous.</li>
-<li>We want our district ratios to approximately match our population ratios.</li>
-<li><p>We'd want to avoid <a href="https://en.wikipedia.org/wiki/Gerrymandering">gerrymandering</a>
-<img src="./img/gerrymandering_example.jpg" style="width: 400px; height: 300px;"/></p>
+<li>We'd want districts to be homogeneous.<ul>
+<li>Either want a district to be all <code>R</code> or all <code>D</code>.</li>
+</ul>
 </li>
+<li>We want our district ratios to approximately match our population ratios.<ul>
+<li>If our population is 50% <code>R</code>, we want 50% <code>R</code> majority districts</li>
+</ul>
+</li>
+<li><p>We'd want to avoid <a href="https://en.wikipedia.org/wiki/Gerrymandering">gerrymandering</a></p>
+<div style="display: inline-flex;">
+<img src="./img/gerrymandering_example.jpg" style="width: 300px; height: 200px;"/>
+<img src="./img/gerrymandering.png" style="width: 300px; height: 200px;"/>
+</div></li>
 <li><p>We want all districts to be around the same population size.</p>
+<ul>
+<li>In our example, $8 \times 8$ grid would mean that each district should be around 8 squares.</li>
+</ul>
 </li>
 </ul>
 
@@ -12240,7 +12270,7 @@ D D D D D D R D</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Which can be visualized as follows.</p>
-<p><img src="./img/mutation.png" style="width: 50%"></p>
+<p><img src="./img/mutation.png" style="width: 70%"></p>
 
 </div>
 </div>
@@ -12324,6 +12354,29 @@ these children should inherit properties from their parents)</li>
 <div style="display: inline-flex;">
 <img src="./img/smallState_initial.png" style="width: 50%">
 <img src="./img/genetic_algorithm_solution_smallState.png" style="width: 50%">
+</div>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Comparisons">Comparisons<a class="anchor-link" href="#Comparisons">&#182;</a></h1><div style="display: inline-flex;">
+<img src="./img/simulated_annealing_values.png" />
+<img src="./img/genetic_algorithm_values.png" />
+</div>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="display: inline-flex;">
+<img src="./img/simulated_annealing_solution_smallState.png" style="width: 30%; height: 10em;"/>
+<img src="./img/smallState_initial.png" style="width: 30%; height: 10em;" />
+<img src="./img/genetic_algorithm_solution_smallState.png" style="width: 30%; height: 10em;" />
 </div>
 </div>
 </div>

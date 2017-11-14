@@ -13,41 +13,39 @@ Notes on implementation:
     * Test coverage is around 80% which I'm happy with. All the super important
     things are tested.
 
-TODO: Multithread for sexiness
-
-~~TODO: Write all assets to ./img directory~~
-~~TODO: Rename get_openspots to get_random_openspot~~
-~~TODO: Mutations always valid~~
-~~TODO: children always valid~~
+TODO: Multithread
 """
 
 # stdlib imports
-import sys
-import os
-import argparse
-import math
-import random
-import re
-import itertools
-import queue
-import time
+import sys       # exits and calls
+import os        # path manipulation
+import argparse  # argument handling
+import math      # exponent - faster than numpy for this
+import random    # built-in random func
+import re        # dynamically pull out algo names
+import queue     # used for SCC labelling
 
 # typing
 from typing import Union
 
-# pypi imports
+# third-party imports
 import numpy as np                       # heavy lifting
+import matplotlib                        # visualization
+matplotlib.use('agg')                    # switch backends for compatibility
 import matplotlib.pyplot as plt          # visualization
 import matplotlib.animation as animation # animation
-import moviepy                           # export to gif
 from moviepy import editor               # More gif
 from tqdm import tqdm                    # Progress bars are nice
+from halo import Halo                    # Spinner
 
 
 FIGSIZE = (4, 4)  # For asset exporting
 OUTDIR = './img'
-INITIAL_COLORMAP = plt.get_cmap('seismic')
-DISTRICT_COLORMAP = plt.get_cmap('nipy_spectral')
+INITIAL_COLORMAP = plt.get_cmap('bwr')
+FILL_COLORMAP = plt.get_cmap('nipy_spectral')
+DISTRICT_COLORMAP = plt.get_cmap('tab10')
+STICKY_NUM = 100
+TARGET_VALUE = 35
 
 
 def main():
@@ -56,9 +54,9 @@ def main():
     if args.numdistricts is None:
         args.numdistricts = len(system.matrix[0])
     if args.full:
-        generate_report_assets(system, args.numdistricts, 1000, True)
-        simulated_annealing(system, args.numdistricts, 1000, True, True)
-        genetic_algorithm(system, args.numdistricts, 1000, True, True)
+        generate_report_assets(system, args.numdistricts, args.precision, True)
+        simulated_annealing(system, args.numdistricts, args.precision, True, True)
+        genetic_algorithm(system, args.numdistricts, args.precision, True, True)
     elif args.report:
         generate_report_assets(system, args.numdistricts, args.precision, args.gif)
     elif args.annealing:
@@ -84,23 +82,43 @@ def simulated_annealing(system, numdistricts, precision, animate, makegif):
     """
     solution = get_good_start(system, numdistricts)
     history = [solution]  # Keep track of our history
-    k = 0.25  # Larger k => more chance of randomly accepting
-    Tvals = np.arange(1, 1e-12, -1.0 / precision)
+    k = 0.1  # Larger k => more chance of randomly accepting
+    Tvals = np.linspace(1, 1e-15, precision,
+                        dtype=np.float128)
+    cval = solution.value
+    iterations_since_increase = 0
     print(f'Running Simulated Annealing with k={k:0.03f}, alpha={1.0 / precision:0.05f}')
+    print(f'num_iterations={len(Tvals)}')
     for i, T in tqdm(enumerate(Tvals), total=len(Tvals)):
         new_solution = solution.copy()  # copy our current solution
         new_solution.mutate()  # Mutate the copy
-        # TODO: Speed this up by keeping current value
-        dv = new_solution.value - solution.value  # Look at delta of values
+        dv = new_solution.value - cval  # Look at delta of values
         # If it's better, or random chance, we accept it
         if dv > 0 or random.random() < math.exp(dv / (k * T)):
             solution = new_solution
+            cval = solution.value
             history.append(new_solution)
+            if dv > 0:
+                iterations_since_increase = 0
+        else:
+            iterations_since_increase += 1
+        if ((iterations_since_increase > STICKY_NUM) and
+                (cval >= TARGET_VALUE)):
+            print('Hit a ceiling, aborting algorithm.')
+            break
 
     solution.count = len(Tvals)
     solution.algo = 'Simulated Annealing'
     print(solution)
     print(solution.summary())
+
+    plt.figure(figsize=FIGSIZE)
+    plt.plot(np.arange(len(history)),
+             [s.value for s in history])
+    plt.title('Simulated Annealing Convergence')
+    plt.xlabel('Iteration Count')
+    plt.ylabel('Value')
+    plt.savefig(os.path.join(OUTDIR, 'simulated_annealing_values.png'))
 
     if animate:
         animate_history(system.filename, system.matrix,
@@ -116,7 +134,7 @@ def get_good_start(system, numdistricts):
     print('Acquiring a good initial solution')
     solution = Solution(system, numdistricts)
     solution.generate_random_solution()  # start with random solution
-    for i in tqdm(range(100)):
+    for i in tqdm(range(500)):
         new_solution = Solution(system, numdistricts)
         new_solution.generate_random_solution()
         if new_solution.value > solution.value:
@@ -129,32 +147,61 @@ def genetic_algorithm(system, numdistricts, precision, animate, makegif):
     """
     Use a genetic algorithm to find a good solution to our district problem
     """
+    def get_top_3(solutions):
+        solutions.sort(key=lambda s: -s.value)
+        return solutions[:3]
     # Start with random initial solution space (3)
-    solutions = [Solution(system, numdistricts) for _ in range(3)]
+    solutions = [Solution(system, numdistricts) for _ in range(100)]
     for s in solutions:
         s.generate_random_solution()  # Initialize our solutions
+    solutions = get_top_3(solutions)
     top_history = []  # Keep history of our top solution from each "frame"
-    for i in tqdm(range(precision)):
-        new_solutions = []
-        for _ in range(10):  # Create 10 children per frame
-            s1, s2 = np.random.choice(solutions, size=2)
-            # Randomly combine two parents
-            new_solutions.append(s1.combine(s2))
-        # Combine everything, giving 13 total solutions
-        full_solutions = new_solutions + solutions
-        # Keep the top 3 for next generation
-        solutions = [_[0] for _ in
-                     sorted([(s, s.value) for s in full_solutions],
-                            key=lambda tup: -tup[1])[:3]]
-        # Only record top from generation, and only if it's changed
-        if len(top_history) == 0 or solutions[0] != top_history[-1]:
-            top_history.append(solutions[0])
+    iterations_since_increase = 0
+    value_history = []
+    iteration_num = 0
+    with Halo(text='Running Algorithm', spinner='dots') as spinner:
+        while True:
+            new_solutions = []
+            for _ in range(10):  # Create 10 children per frame
+                s1, s2 = np.random.choice(solutions, size=2)
+                # Randomly combine two parents
+                combined = s1.combine(s2)
+                # Mutate as well
+                combined.mutate()
+                new_solutions.append(combined)
+            # Combine everything, giving 13 total solutions
+            full_solutions = new_solutions + solutions
+            # Keep the top 3 for next generation
+            solutions = sorted([(s, s.value) for s in full_solutions],
+                                key=lambda tup: -tup[1])
+            value_history += [(iteration_num, s[1]) for s in solutions]
+            solutions = [_[0] for _ in solutions[:3]]
+            # Only record top from generation, and only if it's changed
+            if len(top_history) == 0 or solutions[0] != top_history[-1]:
+                top_history.append(solutions[0])
+                spinner.text = f'Current Generation Top Solution: {str(solutions[0].value)}'
+                iterations_since_increase = 0
+            else:
+                iterations_since_increase += 1
+            if ((iterations_since_increase > STICKY_NUM) and
+                    (top_history[-1].value >= TARGET_VALUE)):
+                print('Hit a ceiling, aborting algorithm.')
+                break
+            iteration_num += 1
 
     solution = top_history[-1]
     solution.count = precision
     solution.algo = 'Genetic Algorithm'
     print(solution)
     print(solution.summary())
+
+    value_history = np.array(value_history)
+    plt.figure(figsize=FIGSIZE)
+    plt.scatter(value_history[:, 0], value_history[:, 1], alpha=0.2, s=10)
+    plt.title('Genetic Algorithm Convergence')
+    plt.xlabel('Iteration Count')
+    plt.ylabel('Value')
+    plt.savefig(os.path.join(OUTDIR, 'genetic_algorithm_values.png'))
 
     if animate:
         animate_history(system.filename, system.matrix,
@@ -185,7 +232,8 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     solution_history = solution.generate_random_solution(history=True)
     animate_history(system.filename, system.matrix,
                     solution_history, solution.numdistricts, makegif,
-                    algo_name='generate_random')
+                    algo_name='generate_random',
+                    cmap=FILL_COLORMAP)
 
     # Now show mutation
     backup = solution.copy()
@@ -201,7 +249,7 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     axarr[1].set_title('Mutant')
     axarr[2].imshow(np.abs(backup.full_mask - solution.full_mask),
                     interpolation='nearest',
-                    cmap=DISTRICT_COLORMAP)
+                    cmap=FILL_COLORMAP)
     axarr[2].axis('off')
     axarr[2].set_title('Difference')
     plt.savefig(os.path.join(OUTDIR, 'mutation.png'))
@@ -211,13 +259,13 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     solution.generate_random_solution()
     fig, axarr = plt.subplots(2, 2, figsize=FIGSIZE)
     axarr[0, 0].imshow(backup.full_mask, interpolation='nearest',
-                       cmap=DISTRICT_COLORMAP,
+                       cmap=FILL_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[0, 0].axis('off')
     axarr[0, 0].set_title('Parent 1')
     axarr[0, 1].imshow(solution.full_mask, interpolation='nearest',
-                       cmap=DISTRICT_COLORMAP,
+                       cmap=FILL_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[0, 1].axis('off')
@@ -225,14 +273,14 @@ def generate_report_assets(system, numdistricts, precision, makegif):
 
     child, history = backup.combine(solution, keep_history=True)
     axarr[1, 1].imshow(child.full_mask, interpolation='nearest',
-                       cmap=DISTRICT_COLORMAP,
+                       cmap=FILL_COLORMAP,
                        vmin=0,
                        vmax=solution.numdistricts)
     axarr[1, 1].axis('off')
     axarr[1, 1].set_title('Child')
 
     sol = axarr[1, 0].imshow(history[0].full_mask, interpolation='nearest',
-                             cmap=DISTRICT_COLORMAP,
+                             cmap=FILL_COLORMAP,
                              vmin=0,
                              vmax=child.numdistricts)
     axarr[1, 0].axis('off')
@@ -262,7 +310,7 @@ def generate_report_assets(system, numdistricts, precision, makegif):
     plt.savefig(os.path.join(OUTDIR, 'kvals.png'))
 
 
-def animate_history(filename, systemdata, history, numdistricts, makegif, algo_name=None):
+def animate_history(filename, systemdata, history, numdistricts, makegif, algo_name=None, cmap=None):
     """
     Take our given solution history, and animate it using matplotlib.animate.
     Save to gif if asked.
@@ -275,26 +323,28 @@ def animate_history(filename, systemdata, history, numdistricts, makegif, algo_n
     axarr[0].axis('off')
     # Plot our first solution
     sol = axarr[1].imshow(history[0].full_mask, interpolation='nearest',
-                          cmap=DISTRICT_COLORMAP,
+                          cmap=cmap or DISTRICT_COLORMAP,
                           vmin=0,
                           vmax=numdistricts)
     axarr[1].set_title(f'value {history[0].value:0.03f}')
     axarr[1].axis('off')
 
-    def update_plot(i):
+    def update_plot(i, N):
         """Animation loop"""
         sol.set_data(history[i].full_mask)
         axarr[1].set_title(f'value {history[i].value:0.03f}')
         plt.suptitle(f'Solution {i}')
         return sol,
 
-    # Set interval so that things always last 60s or to 100
-    interval = max(int(60000.0 / len(history)), 100)
-    if interval == 0:
-        interval = 1
-    interval = 0.5
-    ani = animation.FuncAnimation(fig, update_plot, len(history),
-                                  interval=interval, blit=True)
+    interval = 100  # milliseconds
+    ani = animation.FuncAnimation(
+        fig,
+        update_plot,
+        len(history),
+        fargs=(len(history) - 1,),
+        interval=interval,
+        blit=True
+    )
     if not algo_name:
         algo_name = re.sub(' ', '_', history[-1].algo.lower())
     filename = f'{algo_name}_solution_{filename.split(".")[0]}'
@@ -429,13 +479,12 @@ class Solution(object):
         here, first of which is to make sure that no element in the mask is
         zero, and second check that each district is valid.
         """
-        valid = True
         if (self.full_mask == 0).any():
-            valid = False
-            return valid
+            return False
         for i in range(1, self.numdistricts + 1):
-            valid &= self[i].is_valid
-        return valid
+            if not self[i].is_valid:
+                return False
+        return True
 
     @property
     def majorities(self):
@@ -550,7 +599,7 @@ class Solution(object):
         openspots = np.where(self.full_mask == value)
         spots = []
         for i in range(len(openspots[0])):
-            spots.append([openspots[0][i], openspots[1][i]])
+            spots.append((openspots[0][i], openspots[1][i]))
         return spots
 
     def get_neighbors(self, y, x):
@@ -704,6 +753,7 @@ class Solution(object):
         random.shuffle(districts)
         cursor = 0  # alternates between parents
         history = [new_solution.copy()]
+        # place districts
         for i in districts:
             parent_locations = pick_order[cursor][i].location
             open_locations = new_solution.get_full_openspots(0)
@@ -711,13 +761,14 @@ class Solution(object):
             # We make every child valid
             district.parse_locations(self.height, self.width,
                                      [(y, x) for y, x in parent_locations
-                                      if [y, x] in open_locations])
+                                      if ((y, x) in open_locations)])
             district.make_valid()
             for y, x in district.location:
                 new_solution.full_mask[y, x] = i
             cursor ^= 1
             if keep_history:
                 history.append(new_solution.copy())
+        # Fill
         for i in range(1, self.numdistricts + 1):
             y, x = new_solution.get_random_openspot(i)
             if y is None:
@@ -868,6 +919,8 @@ class Mask(object):
 
     def parse_locations(self, height, width, locations):
         self.mask = np.zeros((height, width))
+        self.height = height
+        self.width = width
         for y, x in locations:
             self.mask[y, x] = 1
 
@@ -889,11 +942,13 @@ class Mask(object):
 
     @property
     def location(self):
-        """List of locations where mask == 1"""
+        """
+        List of locations where mask == 1, returns (y, x) pairs
+        """
         raw_spots = np.where(self.mask == 1)
         spots = []
         for i in range(len(raw_spots[0])):
-            spots.append([raw_spots[0][i], raw_spots[1][i]])
+            spots.append((raw_spots[0][i], raw_spots[1][i]))
         return spots
 
     def get_labels(self):
@@ -909,7 +964,7 @@ class Mask(object):
         labels = np.zeros(self.mask.shape)
         q = queue.Queue()
         def unlabelled(i, j):
-            return self.mask[i, j] == 1 and labels[i, j] == 0
+            return ((self.mask[i, j] == 1) and (labels[i, j] == 0))
         for i in range(self.height):
             for j in range(self.width):
                 if unlabelled(i, j):
@@ -932,7 +987,7 @@ class Mask(object):
 
     @property
     def is_valid(self):
-        curlab, labels = self.get_labels()
+        curlab, _ = self.get_labels()
         if curlab > 2:
             return False
         else:
@@ -955,7 +1010,7 @@ def get_args():
                               'width of the system'))
     parser.add_argument('-z', '--animate', action='store_true', default=False,
                         help='Animate algorithms?')
-    parser.add_argument('-p', '--precision', type=int, default=5000,
+    parser.add_argument('-p', '--precision', type=int, default=10000,
                         help=('Tweak precision, lower is less. '
                               'In a nutshell, how many loops to run.'))
     parser.add_argument('-r', '--report', action='store_true', default=False,

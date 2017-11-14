@@ -1,3 +1,6 @@
 {
-  "tests/test_mask.py::TestMask::()::test_overlap": true
+  "tests/test_e2e.py::TestEndToEnd": true,
+  "tests/test_mask.py::TestMask::()::test_overlap": true,
+  "tests/test_solution.py::TestSolution": true,
+  "tests/test_system.py::TestSystem": true
 }
